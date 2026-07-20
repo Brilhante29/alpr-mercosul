@@ -2,119 +2,97 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Decision Type
 
-`<stack|api-style|cloud|messaging|database|library|runtime|framework>`
+stack, library, runtime
 
 ## Context
 
-Project: `<project-name>`
-Problem: `<problem to solve>`
-Portfolio program: `<program>`
-Public signal: `<GitHub/LinkedIn proficiency signal>`
-Benchmark: `<metric>`
+Project: `5 - alpr-mercosul`
+Problem: Leitura de placa Mercosul com dados sinteticos deterministicos
+Portfolio program: applied-computer-vision
+Public signal: reproducible OCR benchmark em Docker
+Benchmark: character_accuracy, plate_accuracy
 
 ## Selected Option
 
-Selected: `<option>`
+Selected: synthetic fixture (Pillow) + oracle OCR
 
 Reason:
 
-`<Why this option fits the problem, benchmark, and public signal.>`
+Mercosul plates seguem formato LLL1L23 (7 caracteres). A geracao de imagem sintetica com Pillow permite controle deterministico sobre o ground truth. Oracle OCR retorna o metadata diretamente, estabelecendo um baseline perfeito (accuracy=1.0) que valida o pipeline de benchmark.
 
 ## Decision Brain Fields
 
-- Stack profile: `<spring-kotlin-backend|fastapi-backend|go-backend|node-typescript-backend|angular|nextjs|python-ml|terraform>`
-- API style: `<rest-http|graphql|grpc|websocket|sse|cli>`
-- Messaging: `<none|outbox-only|rabbitmq|kafka|redis-streams|nats>`
-- Cloud mode: `<none|kumo-local-first|adapter-fake|real-cloud-required>`
-- Database/runtime: `<selection>`
-- Library policy: `<selection>`
+- Stack profile: python-ml
+- API style: cli
+- Messaging: none
+- Cloud mode: none
+- Database/runtime: none (synthetic data in memory)
+- Library policy: Pillow para geracao de imagem; argparse para CLI; numpy para futuras operacoes de array
 
 ## Engineering Principles
 
 Coupling boundary:
 
-`<Domain/use cases must not depend on framework, DB, broker, cloud SDK, transport, or UI.>`
+Domain types (PlateResult, BenchmarkResult) depend only on standard library. Fixture imports Pillow. CLI imports argparse.
 
 SOLID application:
 
-- SRP: `<how responsibilities are split>`
-- OCP: `<how behavior extends without rewriting stable policy>`
-- LSP: `<how adapters/fakes/reals stay substitutable>`
-- ISP: `<small ports/interfaces used>`
-- DIP: `<high-level policy depends on abstractions>`
+- SRP: fixture generation, OCR reading, and benchmark output are separate modules.
+- OCP: real OCR backends (PaddleOCR, Ultralytics) can be added without modifying oracle code.
+- LSP: PlateResult is substitutable for any OCR backend output shape.
+- ISP: CLI depends on small function signatures (generate_dataset, oracle_read, run_benchmark).
+- DIP: benchmark orchestrates high-level functions, not class hierarchies.
 
 Simplicity:
 
-- KISS: `<simplest design that proves the claim>`
-- YAGNI: `<future abstraction intentionally not added>`
-- DRY: `<duplicated business knowledge removed without premature abstraction>`
+- KISS: one fixture, one oracle OCR, one JSON output.
+- YAGNI: no model serving, no experiment tracking, no hyperparameter optimization.
+- DRY: character accuracy computed once by benchmark module.
 
 Testability evidence:
 
-- `<use case test without transport/infrastructure>`
-- `<adapter or contract test>`
+- Domain types test PlateResult/ BenchmarkResult construction and JSON roundtrip.
+- OCR tests verify deterministic correctness for known plates.
+- No network, database, or cloud dependency required for any test.
+
 ## Rejected Options
 
 | Option | Why rejected |
 |---|---|
-| `<option>` | `<reason>` |
-| `<option>` | `<reason>` |
+| PaddleOCR/Ultralytics real OCR | GPU dependency and complex installation; oracle baseline is sufficient for reproducible benchmark |
+| Real license plate dataset | Network dependency and licensing risk; synthetic fixture is deterministic |
+| FastAPI serving endpoint | No UI or API requirement; CLI is sufficient |
 
 ## API Contract
 
-Contract artifact:
-
-`<OpenAPI|GraphQL schema|protobuf|event contract|CLI output schema|none>`
-
-GraphQL controls, when applicable:
-
-- Query complexity/depth limit: `<yes|no|not applicable>`
-- N+1 prevention: `<DataLoader/batching plan|not applicable>`
-- Field-level auth rule: `<yes|no|not applicable>`
+Contract artifact: CLI argparse (`demo`, `benchmark` subcommands)
 
 ## Cloud Local-First
 
-Local provider:
-
-`<kumo|none|adapter fake>`
-
-Real provider target:
-
-`<aws|none|other>`
-
-Config switch:
-
-```txt
-CLOUD_PROVIDER=<kumo|aws|none>
-CLOUD_ENDPOINT=http://localhost:4566
-```
-
-Unsupported local behaviors:
-
-- `<behavior or none>`
+Local provider: none
+Real provider target: none
+Config switch: none
 
 ## Benchmark Impact
 
-Expected impact:
-
-- `<metric/result this decision should improve or clarify>`
+Expected impact: character_accuracy = 1.0, plate_accuracy = 1.0 with 100 synthetic plates, seed 42
 
 Validation command:
 
 ```powershell
-<command>
+alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/validation.json
 ```
 
 ## Operational Cost
 
-- Docker services added: `<none|kumo|postgres|redis|rabbitmq|redpanda|...>`
-- Local demo complexity: `<low|medium|high>`
-- Failure case required: `<yes|no>`
+- Docker services added: none
+- Local demo complexity: low
+- Failure case required: no
 
 ## Follow-up
 
-- `<what must be revisited if benchmark fails>`
+- N/A
