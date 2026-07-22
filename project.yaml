@@ -6,7 +6,7 @@ program:
   shared_assets:
     - reproducible benchmark JSON schema (plate-level)
     - synthetic plate image fixture generator
-status: implemented
+status: benchmarked
 claim: leitura de placa Mercosul
 stack:
   - python

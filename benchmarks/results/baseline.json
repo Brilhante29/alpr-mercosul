@@ -1,0 +1,632 @@
+{
+  "project": "5-alpr-mercosul",
+  "metric": "character_accuracy",
+  "value": 1.0,
+  "unit": "unit",
+  "timestamp": "2026-07-20T20:14:00Z",
+  "command": "alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks\\results\\baseline.json",
+  "environment": {
+    "python_version": "3.10.11",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "seed": 42,
+    "n_plates": 100,
+    "ocr_backend": "oracle"
+  },
+  "metrics": {
+    "character_accuracy": 1.0,
+    "plate_accuracy": 1.0,
+    "total_plates": 100,
+    "correct_plates": 100,
+    "correct_characters": 700,
+    "total_characters": 700
+  },
+  "proof": {
+    "fixture": "synthetic",
+    "fixture_generator": "alpr_mercosul.fixture.generate_plate",
+    "ocr_backend": "oracle",
+    "plate_format": "LLL1L23"
+  },
+  "failures": 0,
+  "plates": [
+    {
+      "plate": "QAH3E18",
+      "predicted": "QAH3E18",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "SIY4C43",
+      "predicted": "SIY4C43",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UBS6E89",
+      "predicted": "UBS6E89",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PRB2B43",
+      "predicted": "PRB2B43",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "YSP9K41",
+      "predicted": "YSP9K41",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UBU6U40",
+      "predicted": "UBU6U40",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "JDI0K05",
+      "predicted": "JDI0K05",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "WLS2V85",
+      "predicted": "WLS2V85",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "BFO2V68",
+      "predicted": "BFO2V68",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "XFE1Y44",
+      "predicted": "XFE1Y44",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "MCM5E98",
+      "predicted": "MCM5E98",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PPF1V02",
+      "predicted": "PPF1V02",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QOT2Q19",
+      "predicted": "QOT2Q19",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "YTV0P62",
+      "predicted": "YTV0P62",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "GHS6V49",
+      "predicted": "GHS6V49",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "APA1E10",
+      "predicted": "APA1E10",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "SOE6J05",
+      "predicted": "SOE6J05",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "IQV3B23",
+      "predicted": "IQV3B23",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "AAR9P59",
+      "predicted": "AAR9P59",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "JBT1T49",
+      "predicted": "JBT1T49",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "CNA4F64",
+      "predicted": "CNA4F64",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UJA8Z05",
+      "predicted": "UJA8Z05",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ZEW8M78",
+      "predicted": "ZEW8M78",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "VLU9B21",
+      "predicted": "VLU9B21",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UZJ5C76",
+      "predicted": "UZJ5C76",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TPZ4M31",
+      "predicted": "TPZ4M31",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PJO8F81",
+      "predicted": "PJO8F81",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "CLB7P15",
+      "predicted": "CLB7P15",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "RAD2N56",
+      "predicted": "RAD2N56",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QZF6G66",
+      "predicted": "QZF6G66",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "XLQ0L79",
+      "predicted": "XLQ0L79",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "AAR4L19",
+      "predicted": "AAR4L19",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "HDY9F74",
+      "predicted": "HDY9F74",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "EZV5K74",
+      "predicted": "EZV5K74",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "NAV4W96",
+      "predicted": "NAV4W96",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DQS4D90",
+      "predicted": "DQS4D90",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DPN4C53",
+      "predicted": "DPN4C53",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "GAD3R45",
+      "predicted": "GAD3R45",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "HFS2X95",
+      "predicted": "HFS2X95",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PHY7D91",
+      "predicted": "PHY7D91",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "VOP1I21",
+      "predicted": "VOP1I21",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UVB7N17",
+      "predicted": "UVB7N17",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DWU7S95",
+      "predicted": "DWU7S95",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "YLZ2Y11",
+      "predicted": "YLZ2Y11",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "RZH7J68",
+      "predicted": "RZH7J68",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "AKZ2U99",
+      "predicted": "AKZ2U99",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "GWR8X24",
+      "predicted": "GWR8X24",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PWB1G41",
+      "predicted": "PWB1G41",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "NZP9G07",
+      "predicted": "NZP9G07",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "XSJ6O23",
+      "predicted": "XSJ6O23",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "GRV0I38",
+      "predicted": "GRV0I38",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TWX0F58",
+      "predicted": "TWX0F58",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "OGS8V04",
+      "predicted": "OGS8V04",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TQG7B73",
+      "predicted": "TQG7B73",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QBV7Q83",
+      "predicted": "QBV7Q83",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "VGX3C93",
+      "predicted": "VGX3C93",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "RFO9F42",
+      "predicted": "RFO9F42",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QJB7C72",
+      "predicted": "QJB7C72",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "RSC2L11",
+      "predicted": "RSC2L11",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ETV0B39",
+      "predicted": "ETV0B39",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UEH2K85",
+      "predicted": "UEH2K85",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "KPE3Y05",
+      "predicted": "KPE3Y05",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "CKN0M47",
+      "predicted": "CKN0M47",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DCQ9G81",
+      "predicted": "DCQ9G81",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "WGJ5L63",
+      "predicted": "WGJ5L63",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "LDK2C30",
+      "predicted": "LDK2C30",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ZTH3X87",
+      "predicted": "ZTH3X87",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "MFT9R57",
+      "predicted": "MFT9R57",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "NQG9V63",
+      "predicted": "NQG9V63",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PEM8B01",
+      "predicted": "PEM8B01",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "SSW0V71",
+      "predicted": "SSW0V71",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "UOD1W09",
+      "predicted": "UOD1W09",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TSY1L23",
+      "predicted": "TSY1L23",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "MLE7B60",
+      "predicted": "MLE7B60",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TVD3W13",
+      "predicted": "TVD3W13",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DTL0D61",
+      "predicted": "DTL0D61",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "DCX3U77",
+      "predicted": "DCX3U77",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "LPA6A09",
+      "predicted": "LPA6A09",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ONQ9Q47",
+      "predicted": "ONQ9Q47",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "CBB6Y56",
+      "predicted": "CBB6Y56",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PSC0J89",
+      "predicted": "PSC0J89",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "EQI1U08",
+      "predicted": "EQI1U08",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "WPL6C09",
+      "predicted": "WPL6C09",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ZPJ2X31",
+      "predicted": "ZPJ2X31",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "PFV8F84",
+      "predicted": "PFV8F84",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "CKQ2X10",
+      "predicted": "CKQ2X10",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "TQO1O98",
+      "predicted": "TQO1O98",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "NSC4L29",
+      "predicted": "NSC4L29",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QQI2X86",
+      "predicted": "QQI2X86",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "FGZ1B05",
+      "predicted": "FGZ1B05",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "ROO1K92",
+      "predicted": "ROO1K92",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "LDG0L10",
+      "predicted": "LDG0L10",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "QNM5G37",
+      "predicted": "QNM5G37",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "NJN1K12",
+      "predicted": "NJN1K12",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "XHC7N72",
+      "predicted": "XHC7N72",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "SLU3I70",
+      "predicted": "SLU3I70",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "SDM6N48",
+      "predicted": "SDM6N48",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "LOF0U82",
+      "predicted": "LOF0U82",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "VDW7B86",
+      "predicted": "VDW7B86",
+      "correct": true,
+      "character_errors": 0
+    },
+    {
+      "plate": "OFC4S97",
+      "predicted": "OFC4S97",
+      "correct": true,
+      "character_errors": 0
+    }
+  ]
+}
