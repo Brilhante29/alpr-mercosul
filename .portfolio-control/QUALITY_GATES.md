@@ -24,10 +24,29 @@ Completion requires evidence, not intent.
       pytest-style (no `unittest.TestCase`) so the validator's `unittest discover`
       collected 0 tests — a false green now closed. CI "Run tests" step: **success**
       (7 tests). Verified locally in python:3.12 container: 7 passed.
-- [ ] BLOCKER: CI "Validate portfolio contract" step still fails on run 30295887717
-      (head b6accd1). Not reproducible in any local Linux + pwsh 7 + Python 3.12
-      container, including a clean `git archive HEAD` checkout and GitHub's exact
-      pwsh preamble (`$ErrorActionPreference='stop'`, `$PSNativeCommandUseErrorActionPreference=$true`)
-      — the validator prints "portfolio project validation passed" and exits 0 every time.
-      Resolving this requires the GitHub Actions step log (needs authenticated access),
-      which is unavailable in this environment. Handed to user.
+- [x] RESOLVED: the "Validate portfolio contract" blocker is closed.
+      Two defects were behind it.
+
+      1. Silent reporting. `tools/validate-project.ps1` sets
+         `$ErrorActionPreference = "Stop"`, which makes `Write-Error` terminating,
+         so `$failures | ForEach-Object { Write-Error $_ }` threw on the first
+         entry and neither the remaining failures nor the explicit `exit 1` ran.
+         With three broken gates the script printed nothing on stdout and one
+         failure on stderr, so no CI log named the failing gate. Fixed by listing
+         every failure and emitting `::error::` annotations under Actions.
+
+      2. Wrong test runner. With reporting fixed, CI named the gate:
+         `python unittest failed with exit code 5`. The tests are pytest-style,
+         so `unittest discover` collects zero tests — exit 0 on Python 3.11
+         (a false green, and why three local repros passed) but exit 5 on
+         Python 3.12, which `setup-python` installs. Fixed by selecting pytest
+         when the project configures it.
+
+      A third defect was introduced and fixed during the work: the validator now
+      runs pytest, so a happy-path test invoking the validator from inside that
+      suite recursed until the job was killed (run 30639032942, exit 143). That
+      test was removed; the green path is covered by this CI step.
+
+      Evidence: run 30640505436 on head 8c046de — every step success, including
+      Validate portfolio contract, Build image, Run demo and Run benchmark.
+      https://github.com/Brilhante29/alpr-mercosul/actions/runs/30640505436
