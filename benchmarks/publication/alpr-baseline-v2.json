@@ -1,0 +1,51 @@
+{
+  "benchmark_id": "alpr-ocr",
+  "comparability_key": "alpr-ocr:1.0.0:oracle-ocr:synthetic-plates:x86_64",
+  "environment": {
+    "architecture": "amd64",
+    "hardware_class": "docker-local",
+    "runtime": "python-3.12-slim"
+  },
+  "execution": {
+    "command": "docker run --rm -v C:/Users/Guilherme/Desktop/repos-github/alpr-mercosul/benchmarks/results:/app/benchmarks/results alpr-mercosul benchmark --n-plates 100 --seed 42 --output /app/benchmarks/results/pub-v2run.json",
+    "duration_seconds": 1.379,
+    "exit_code": 0,
+    "repeat": 1,
+    "started_at": "2026-07-31T20:25:43.591763Z"
+  },
+  "metrics": [
+    {
+      "direction": "higher_is_better",
+      "failures": 0,
+      "name": "character_accuracy",
+      "samples": [
+        1.0
+      ],
+      "summary": {
+        "character_accuracy": 1.0
+      },
+      "unit": "unit",
+      "value": 1.0
+    }
+  ],
+  "project": "alpr-mercosul",
+  "provenance": {
+    "artifact_digest": "sha256:4ade11dca0c271457ab3e22d859a2eb77fc5b8e237443a139cb0dfd79ca083db",
+    "clean_tree": true,
+    "dependency_lock_digest": "sha256:cce0952c9c270359980e2d734cb7602064e9e3b3c5861a2fbb545bf6d71f7d23",
+    "image_digest": "sha256:6e86789f37c6eed67620b1d6eed4e95613cfee661472dbd08fd5e79012cad88c",
+    "image_ref": "alpr-mercosul@sha256:6e86789f37c6eed67620b1d6eed4e95613cfee661472dbd08fd5e79012cad88c",
+    "producer": "local",
+    "source_commit": "0b212322b3ad403a788e4e64ed651f49f12178e8"
+  },
+  "run_id": "f0f2024b-7202-4db1-b754-f12bd0eb8371",
+  "schema_version": 2,
+  "workload": {
+    "concurrency": 1,
+    "config_digest": "sha256:735f807e79741e38e6ce324ca38a6ab0af4a216ccfd4080633197b48752a36d5",
+    "fixture_digest": "sha256:45b1346cba811ee9ef447358b0fcfbd84c7b108d12da69921b071507b000172f",
+    "measured_iterations": 1,
+    "version": "1.0.0",
+    "warmup_iterations": 0
+  }
+}
