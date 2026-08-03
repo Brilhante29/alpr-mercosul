@@ -11,7 +11,7 @@ Project: `5 - alpr-mercosul`
 - V1: 100 plates, 700 characters, 1.0 character accuracy, 1.0 plate accuracy, zero failures.
 - V2: `repeat=1`, `measured_iterations=100`, clean source and immutable image digest.
 - Local tests, Ruff, project validator, Docker demo and Docker benchmark: passed.
-- Publication status: benchmarked; exact-head CI and central evidence remain.
+- Publication status: published; evidence commit `f22c834` passed exact-head CI run `30778167462` and its proof is embedded at `.portfolio-control/PUBLICATION_EVIDENCE.json`.
 
 ## Decision Chain
 
@@ -34,4 +34,4 @@ Project: `5 - alpr-mercosul`
 
 ## Next Action
 
-Commit V1/V2 evidence and final documentation, push the branch, require exact-head CI, inspect every job step, then promote to published and refresh central evidence.
+Use the central `portfolio-reuse-kit` publication registry for the final metadata HEAD and continue the portfolio queue with `mlops-end2end` (#21). Do not expand this synthetic workload into a real-road claim.

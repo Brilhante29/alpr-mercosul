@@ -19,5 +19,5 @@
 ## Publication
 
 - [x] Local project and Docker gates pass.
-- [ ] Exact-head GitHub Actions passes.
-- [ ] Central evidence is refreshed and manifest status is `published`.
+- [x] Exact-head GitHub Actions passes for evidence commit `f22c834`.
+- [x] Central evidence is embedded and manifest status is `published`.

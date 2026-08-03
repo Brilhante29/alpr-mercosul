@@ -6,7 +6,7 @@ program:
   shared_assets:
     - reproducible benchmark JSON schema (plate-level)
     - synthetic plate image fixture generator
-status: benchmarked
+status: published
 claim: synthetic Mercosul plate OCR from image pixels
 stack:
   - python-3.12

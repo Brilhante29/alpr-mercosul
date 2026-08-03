@@ -11,5 +11,5 @@
 - [x] README opens with the measured number and synthetic scope.
 - [x] References, SDD, reuse review and OpenSpec artifacts agree.
 - [x] Default path requires no network credential or paid secret.
-- [ ] Exact-head GitHub Actions is green for the evidence commit.
-- [ ] Central publication evidence is current for the final head.
+- [x] Exact-head GitHub Actions is green for evidence commit `f22c834` (run `30778167462`).
+- [x] Central publication evidence for the evidence commit is embedded and externally verifiable.

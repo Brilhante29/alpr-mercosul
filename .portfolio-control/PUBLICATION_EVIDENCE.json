@@ -1,0 +1,11 @@
+{
+    "schema_version":  1,
+    "repository":  "alpr-mercosul",
+    "commit_sha":  "f22c834ca92c14eb6ae1a6a7cd5c5c45dc354666",
+    "branch":  "agent/sync-agent-contract",
+    "remote_url":  "https://github.com/Brilhante29/alpr-mercosul.git",
+    "ci_conclusion":  "success",
+    "ci_run_url":  "https://github.com/Brilhante29/alpr-mercosul/actions/runs/30778167462",
+    "workflow":  "ci",
+    "verified_at":  "2026-08-03T02:00:46.3355579Z"
+}
