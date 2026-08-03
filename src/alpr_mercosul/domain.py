@@ -26,15 +26,13 @@ class BenchmarkResult:
     timestamp: str
     command: str
     environment: dict[str, Any]
-    metrics: dict[str, float]
+    metrics: dict[str, float | int]
     proof: dict[str, Any]
     failures: int
     plates: list[dict[str, Any]]
 
     def to_json(self, path: Path) -> None:
-        path.write_text(
-            json.dumps(dataclasses.asdict(self), indent=2, default=str)
-        )
+        path.write_text(json.dumps(dataclasses.asdict(self), indent=2))
 
     @staticmethod
     def from_metrics(
@@ -45,7 +43,9 @@ class BenchmarkResult:
         command: str,
         output_path: Path,
         plates: list[PlateResult],
+        ocr_backend: str,
     ) -> BenchmarkResult:
+        incorrect_plates = sum(not plate.correct for plate in plates)
         return BenchmarkResult(
             project="5-alpr-mercosul",
             metric="character_accuracy",
@@ -58,33 +58,33 @@ class BenchmarkResult:
                 "platform": platform.platform(),
                 "seed": seed,
                 "n_plates": n_plates,
-                "ocr_backend": "oracle",
+                "ocr_backend": ocr_backend,
             },
             metrics={
                 "character_accuracy": character_accuracy,
                 "plate_accuracy": plate_accuracy,
                 "total_plates": n_plates,
-                "correct_plates": sum(1 for p in plates if p.correct),
+                "correct_plates": n_plates - incorrect_plates,
                 "correct_characters": sum(
-                    p.total_characters - p.character_errors
-                    for p in plates
+                    plate.total_characters - plate.character_errors for plate in plates
                 ),
-                "total_characters": sum(p.total_characters for p in plates),
+                "total_characters": sum(plate.total_characters for plate in plates),
             },
             proof={
-                "fixture": "synthetic",
+                "fixture": "synthetic-fixed-layout",
                 "fixture_generator": "alpr_mercosul.fixture.generate_plate",
-                "ocr_backend": "oracle",
+                "ocr_backend": ocr_backend,
+                "prediction_input": "image_pixels_only",
                 "plate_format": "LLL1L23",
             },
-            failures=0,
+            failures=incorrect_plates,
             plates=[
                 {
-                    "plate": p.plate,
-                    "predicted": p.predicted,
-                    "correct": p.correct,
-                    "character_errors": p.character_errors,
+                    "plate": plate.plate,
+                    "predicted": plate.predicted,
+                    "correct": plate.correct,
+                    "character_errors": plate.character_errors,
                 }
-                for p in plates
+                for plate in plates
             ],
         )

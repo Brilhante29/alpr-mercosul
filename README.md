@@ -1,34 +1,24 @@
 # #5 alpr-mercosul
 
-**Status:** benchmarked
+**Status:** implementation verified; publication evidence is being regenerated
 
-**Proves:** leitura de placa Mercosul (Mercosul license plate reading) with deterministic synthetic data and oracle OCR baseline.
+**Proves:** deterministic Mercosul-format plate OCR from synthetic image pixels. The reader receives no ground-truth text.
 
-**Stack:** python, pillow, numpy, docker
+**Stack:** Python 3.12, Pillow 10.4.0, NumPy 1.26.4, pytest, Docker
 
-## Benchmark
+## Evidence Scope
 
-`python -m alpr_mercosul benchmark --n-plates 100 --seed 42`
+The workload contains 100 seeded `LLL1L23` plates rendered at 200x80 with controlled pixel noise. A fixed-layout template matcher predicts seven characters from the image. Ground truth is used only after prediction to calculate character and plate accuracy.
 
-| Metric | Value | Unit |
-|---|---:|---|
-| character_accuracy | 1.000000 | unit |
-| plate_accuracy | 1.000000 | unit |
-| total_plates | 100 | count |
-| correct_plates | 100 | count |
-| total_characters | 700 | count |
-| correct_characters | 700 | count |
-
-*Environment: Python 3.10.11, seed=42, oracle OCR backend.*
+This is a synthetic OCR baseline. It does not claim vehicle detection, plate localization, perspective correction, real-road generalization, or production accuracy.
 
 ## Architecture
 
-```
-fixture (synthetic plate image generation) -> ocr (oracle reader) -> benchmark (JSON output)
-cli -> orchestrates pipeline
+```text
+glyph rendering contract -> synthetic fixture -> image-only OCR -> evaluation -> JSON evidence
 ```
 
-Mercosul plates follow the pattern `LLL1L23` (3 letters, 1 digit, 1 letter, 2 digits). The fixture generates random valid plates and renders them as synthetic images with blue border and controlled noise. The oracle OCR reads the ground truth from metadata (simulating perfect OCR) and character-level accuracy is computed against the expected plate.
+The critical boundary is enforced by the API: `read_plate(image) -> str`. A negative test replaces one glyph in the image while preserving the expected label and confirms that the prediction follows the changed pixels.
 
 ## Run
 
@@ -39,24 +29,20 @@ docker run --rm alpr-mercosul
 
 ## Commands
 
-| Command | Description |
+| Command | Purpose |
 |---|---|
-| `alpr-mercosul demo` | Show sample plate readings |
-| `alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json` | Run full benchmark |
+| `alpr-mercosul demo --n-plates 5 --seed 42` | Show expected and image-derived predictions. |
+| `alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json` | Produce raw V1 evidence. |
+| `./tools/publish-benchmark.ps1` | Build the image and produce V1 plus provenance-rich V2 evidence. |
+| `./tools/validate-project.ps1` | Run project, test, content and Docker gates. |
 
-## Benchmark
+## Reproducibility
 
-```bash
-docker run --rm alpr-mercosul benchmark
-```
-
-Or natively:
-
-```bash
-pip install -e .
-python -m alpr_mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json
-```
+- Publication workload: `benchmarks/config/alpr-synthetic-v1.json`.
+- Runtime dependencies: exact versions in `requirements.txt` and installed by Docker.
+- Publication producer: `tools/generate-publication-benchmark.py`, synchronized from `portfolio-reuse-kit`.
+- `execution.repeat` counts runs; `workload.measured_iterations` counts plates.
 
 ## References
 
-See REFERENCES.md.
+See [REFERENCES.md](REFERENCES.md).

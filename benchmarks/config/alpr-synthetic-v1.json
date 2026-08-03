@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "workload_version": "1.0.0",
+  "plate_format": "LLL1L23",
+  "n_plates": 100,
+  "seed": 42,
+  "image_width": 200,
+  "image_height": 80,
+  "noise_pixels": 800,
+  "renderer": "pillow-default-monospace-nearest-4x",
+  "ocr_backend": "template-matching-v1"
+}

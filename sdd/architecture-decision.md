@@ -4,76 +4,46 @@
 
 Accepted
 
-## Context
+## Problem Forces
 
-Project: `5 - alpr-mercosul`
-Claim: leitura de placa Mercosul
-Benchmark: character_accuracy, plate_accuracy
-
-Problem forces:
-
-- Domain complexity: low
-- Integration pressure: low
-- UI state complexity: none
-- Data/ML reproducibility: high
-- Auditability/event history: medium
-- Throughput/async pressure: low
-- Independent deployability need: low
+- Domain complexity: low.
+- Data and ML reproducibility: high.
+- Integration pressure: low.
+- Auditability: high because prediction must not access labels.
+- Independent deployability: low.
 
 ## Decision
 
-Chosen architecture: `pipeline`
+Use a single-process pipeline:
 
-Reason:
+```text
+rendering contract -> synthetic fixture -> image-only OCR -> evaluation -> V1/V2 evidence
+```
 
-A three-stage pipeline (fixture generation -> OCR reading -> benchmark output) maps directly to the problem. Data flows in one direction with no branching, state machine, or event loop. The CLI wraps all three stages and provides `demo` and `benchmark` subcommands.
+Dependency direction:
 
-Dependency rule:
-
-fixture depends only on Pillow; OCR depends on domain types; benchmark depends on fixture and OCR; CLI depends on all three inward.
+- `domain.py` depends only on the standard library.
+- `rendering.py` owns glyph geometry and Pillow rendering.
+- `fixture.py` creates labeled images using the rendering contract.
+- `ocr.py` receives only image pixels and returns a prediction; it never receives ground truth.
+- `benchmark.py` owns orchestration and compares predictions with labels.
+- `cli.py` is the composition boundary.
 
 ## Rejected Alternatives
 
-| Alternative | Why rejected |
+| Alternative | Reason |
 |---|---|
-| hexagonal | No infrastructure boundary worth isolating; no ports/adapters needed without cloud, database, or transport |
-| microservices | Single-process pipeline has no deploy boundary; splitting adds distributed cost without benefit |
+| Hexagonal architecture | There is no infrastructure or transport adapter in the current scope. The critical boundary is label isolation, which modules and signatures enforce directly. |
+| MVC or MVVM | There is no interactive UI state. |
+| Microservices | One deterministic CPU pipeline has no independent deployment boundary. |
 
-## Folder Layout
+## Tests
 
-```
-src/
-  alpr_mercosul/
-    __init__.py
-    __main__.py
-    cli.py
-    domain.py
-    fixture.py
-    ocr.py
-    benchmark.py
-tests/
-  test_domain.py
-  test_ocr.py
-benchmarks/
-  results/
-    baseline.json
-```
-
-## Testing Strategy
-
-- Unit tests: domain types (PlateResult, BenchmarkResult construction and serialization)
-- Integration tests: oracle OCR correctness with known plates
-- Benchmark: full pipeline via CLI or Docker, outputs JSON to benchmarks/results/
+- Unit: result calculation, renderer validation and invalid workload.
+- Behavioral: 100 seeded images are read from pixels.
+- Negative: replacing one rendered cell changes prediction while the expected label remains unchanged.
+- Integration: CLI/Docker writes V1 JSON and the shared producer emits V2 provenance.
 
 ## Consequences
 
-Positive:
-
-- Simple three-stage pipeline is easy to understand and modify.
-- Deterministic synthetic data ensures reproducible benchmarks across environments.
-- No external dependencies for default path.
-
-Tradeoffs:
-
-- Oracle OCR assumes perfect reading; real-world accuracy would be lower.
-- Synthetic plates may not reflect real-world imaging conditions; the claim is about OCR benchmark reproducibility, not production-grade recognition.
+The result is truthful for a narrow synthetic fixed-layout workload and reproducible without network or GPU. Generalization to real imagery is intentionally unproven and must use a new workload version, dataset provenance and architecture review.

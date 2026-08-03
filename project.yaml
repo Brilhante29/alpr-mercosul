@@ -2,22 +2,22 @@ id: 5
 name: alpr-mercosul
 program:
   id: applied-computer-vision
-  narrative_fit: Proves Mercosul license plate OCR with deterministic synthetic data and an oracle reader, establishing a reproducible baseline for character-level and plate-level accuracy.
+  narrative_fit: Proves deterministic Mercosul-format plate OCR from synthetic image pixels with template matching, character accuracy, and explicit real-road limitations.
   shared_assets:
     - reproducible benchmark JSON schema (plate-level)
     - synthetic plate image fixture generator
-status: benchmarked
-claim: leitura de placa Mercosul
+status: implemented
+claim: synthetic Mercosul plate OCR from image pixels
 stack:
-  - python
-  - opencv
-  - ultralytics
-  - paddleocr
+  - python-3.12
+  - pillow-10.4.0
+  - numpy-1.26.4
+  - pytest
   - docker
 language_profile:
-  primary: python-ml
+  primary: python
   secondary: []
-  reason: Python with Pillow handles synthetic image generation; numpy supports array operations; the oracle OCR avoids heavy GPU dependency for the reproducible baseline.
+  reason: Python, Pillow, and NumPy implement deterministic rendering and image-only template matching without model downloads, GPU, or network access.
 decision_brain:
   agentic_spec:
     source: .portfolio/decision-brain/agentic-spec-governance.yaml
@@ -39,10 +39,10 @@ decision_brain:
     review_path: sdd/reuse-improvement-review.md
     current_status: recorded
   principles:
-    coupling_rule: domain types depend only on standard library; fixture depends only on Pillow; OCR depends on domain types; CLI depends on all three inward.
+    coupling_rule: domain types depend only on the standard library; rendering owns glyph geometry; OCR receives image pixels only; benchmark alone owns ground-truth evaluation.
     solid: [srp, ocp, lsp, isp, dip]
-    simplicity_rule: one synthetic plate fixture, one oracle OCR, one JSON benchmark output prove the claim without external data or GPU infrastructure.
-    testability_rule: domain and oracle OCR run with synthetic data; no network, database, or cloud dependency required.
+    simplicity_rule: one fixed-layout fixture, one image-only template matcher, and one JSON evidence path prove the narrow synthetic claim without external data or GPU infrastructure.
+    testability_rule: a pixel-mutation test proves prediction follows image content rather than labels; no network, database, or cloud dependency is required.
     rejected_overengineering:
       - deep learning OCR pipeline
       - real license plate image dataset
@@ -60,17 +60,17 @@ decision_brain:
     config_switch: none
     unsupported_behaviors: []
   database: none
-  runtime: Python CLI in a slim Docker image; oracle OCR with deterministic seed.
-  library_policy: Pillow for synthetic image generation; argparse for CLI; no other runtime dependencies for the baseline path.
+  runtime: Python CLI in a slim Docker image; deterministic template-matching OCR with seed 42.
+  library_policy: Pin Pillow and NumPy for rendering and binary template distance; use argparse for CLI; add no model, HTTP, broker, or cloud runtime.
   record_path: sdd/technical-decision.md
   rejected_options:
-    - option: PaddleOCR/Ultralytics real OCR pipeline
-      reason: Heavy GPU dependency and installation complexity; oracle OCR establishes the deterministic baseline first; real OCR can be added as a real-backend option later.
+    - option: PaddleOCR/Ultralytics model pipeline
+      reason: Model downloads, GPU cost, and external artifact provenance are not justified before a truthful image-only local baseline; real-road OCR remains a separate workload.
     - option: Real license plate dataset
       reason: External datasets introduce reproducibility risk and network dependency; synthetic fixtures are deterministic and local.
 architecture:
   style: pipeline
-  reason: Image generation, OCR reading, and benchmark evaluation form a natural three-stage pipeline from synthetic input to benchmark output.
+  reason: Rendering, image-only prediction, and ground-truth evaluation form a directional pipeline whose function signatures prevent label leakage.
   problem_forces:
     domain_complexity: low
     integration_pressure: low
@@ -79,10 +79,10 @@ architecture:
     auditability: medium
     throughput_or_async: low
     independent_deployability: low
-  dependency_rule: fixture depends only on Pillow; OCR depends on domain types; benchmark depends on fixture and OCR; CLI depends on all three.
+  dependency_rule: domain is framework-free; rendering is shared by fixture and matcher; OCR accepts pixels only; benchmark owns labels and evaluation; CLI composes inward.
   boundaries:
     - fixture owns synthetic plate image generation with deterministic seed
-    - ocr owns plate reading and character comparison
+    - ocr owns image-only prediction; benchmark owns label comparison
     - benchmark owns orchestration and JSON output
     - cli owns command-line interface
   rejected_alternatives:
@@ -100,7 +100,7 @@ benchmark:
   command: "alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json"
   result_path: benchmarks/results/baseline.json
   publication_result_path: benchmarks/publication/alpr-baseline-v2.json
-  evidence_status: current
+  evidence_status: stale
 release:
   docker: "docker run --rm alpr-mercosul"
   no_secret_default_path: true

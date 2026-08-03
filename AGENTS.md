@@ -42,6 +42,8 @@ The default demo must run without paid credentials. Use Docker for the runnable 
 
 At each major milestone, ask whether this project exposed a reusable improvement for `portfolio-reuse-kit`. Patch low-risk reusable improvements immediately; otherwise record backlog or rejection in `sdd/reuse-improvement-review.md`. Do not leave the review as a template: every ready project must remove placeholder rows and complete the final gate with explicit `[x]` checks.
 
+For V2 evidence, load `.codex/skills/publish-benchmark-evidence/SKILL.md` and run `tools/publish-benchmark.ps1`. Never use execution repetition as workload size.
+
 ## Publication Gate
 
 Do not present this repository as portfolio-ready until it has:

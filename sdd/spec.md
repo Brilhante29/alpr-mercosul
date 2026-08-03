@@ -6,64 +6,46 @@
 
 ## Claim
 
-Este projeto prova que: leitura de placa Mercosul com dados sinteticos deterministicos, estabelecendo baseline reproduzivel de character_accuracy e plate_accuracy.
+This project proves deterministic Mercosul-format plate OCR from synthetic image pixels, measured by character and full-plate accuracy. It does not claim real-road detection or production accuracy.
 
 ## Stack
 
-python, opencv, ultralytics, paddleocr, docker
+Python 3.12, Pillow 10.4.0, NumPy 1.26.4, pytest, Docker.
 
-## User-visible output
+## In Scope
 
-- Docker command: `docker run --rm alpr-mercosul`
-- README opens with: `# #5 alpr-mercosul`
-- Benchmark table: character_accuracy, plate_accuracy
+- Generate deterministic `LLL1L23` plate images with controlled pixel noise.
+- Predict all seven characters from image pixels without passing ground truth to the reader.
+- Evaluate character accuracy, plate accuracy, failures, and workload size.
+- Reject zero-item benchmarks.
+- Produce V1 execution output and V2 provenance evidence through Docker.
 
-## Scope
+## Out Of Scope
 
-In:
-
-- Implementar o menor produto funcional que prove o claim.
-- Gerar imagens sinteticas de placas Mercosul no formato LLL1L23.
-- Implementar oracle OCR que extrai caracteres do metadata.
-- Reportar character_accuracy e plate_accuracy como JSON.
-- Rodar por Docker.
-- Gerar benchmark JSON reproduzivel.
-
-Out:
-
-- Publicar repo antes do primeiro resultado numerico.
-- Depender de GPU para o caminho default.
-- Depender de segredo pago para o caminho default.
-- Deep learning OCR (PaddleOCR/Ultralytics) no caminho baseline.
+- Vehicle or plate localization in unconstrained photographs.
+- Real-road datasets and a production accuracy claim.
+- PaddleOCR, Ultralytics, GPU training, HTTP serving, cloud, or paid secrets.
 
 ## Architecture
 
-```
-fixture (synthetic plate images) -> ocr (oracle reader) -> benchmark (JSON output)
-cli -> orchestrates pipeline
+```text
+synthetic fixture -> fixed-layout pixel OCR -> benchmark evaluation -> JSON evidence
+                               ^
+                     shared glyph rendering contract
 ```
 
 ## Benchmark
 
-Primary metric:
+- Primary metric: `character_accuracy`, higher is better.
+- Secondary metric: `plate_accuracy`.
+- Workload: 100 deterministic plates, 700 characters, seed 42.
+- V1 command: `alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json`.
+- Publication command: `./tools/publish-benchmark.ps1`.
 
-- name: character_accuracy, plate_accuracy
-- target: first reproducible baseline >= 1.0 (oracle)
-- command: `alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json`
-- result file: `benchmarks/results/baseline.json`
+## Definition Of Done
 
-## Dataset or fixture
-
-- source: synthetic (src/alpr_mercosul/fixture.py)
-- size: 100 plates (configurable via --n-plates)
-- license: project-specific (no external data)
-- deterministic seed: 42
-
-## Definition of done
-
-- [x] Docker command works from clean clone.
-- [x] README starts with project number and benchmark result.
-- [x] Benchmark command writes JSON result.
-- [x] Tests cover core behavior.
-- [x] REFERENCES.md explains reuse.
-- [x] No secret or paid credential required for default demo.
+- [x] Reader accepts the image only; ground truth is confined to evaluation.
+- [x] A pixel-mutation test proves prediction follows pixels rather than labels.
+- [x] Zero workload fails.
+- [ ] Fresh Docker benchmark and V2 evidence are committed.
+- [ ] Exact-head CI and central publication evidence are green.

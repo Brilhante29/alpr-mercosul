@@ -12,7 +12,7 @@ Use the same execution graph as Codex:
 2. Confirm architecture and dependency direction.
 3. Confirm the stack, API style, messaging, cloud, database, and library decisions.
 4. Keep the default path local-first and free of paid secrets.
-5. Run the benchmark and project validation.
+5. Load `.claude/skills/publish-benchmark-evidence/SKILL.md`, run the benchmark, and validate V2 workload semantics.
 6. Review whether the reuse kit should improve because of the work.
 
 Do not install external AITmpl components or other machine-level tooling unless

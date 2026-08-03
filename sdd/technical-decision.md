@@ -4,95 +4,43 @@
 
 Accepted
 
-## Decision Type
-
-stack, library, runtime
-
 ## Context
 
-Project: `5 - alpr-mercosul`
-Problem: Leitura de placa Mercosul com dados sinteticos deterministicos
-Portfolio program: applied-computer-vision
-Public signal: reproducible OCR benchmark em Docker
-Benchmark: character_accuracy, plate_accuracy
+The previous oracle returned ground truth and therefore validated only the harness. It could report perfect accuracy without reading image pixels. The portfolio claim requires a real, local, reproducible OCR behavior while remaining explicit that synthetic fixed-layout data is not real-road ALPR.
 
 ## Selected Option
 
-Selected: synthetic fixture (Pillow) + oracle OCR
+Use deterministic glyph template matching over seven fixed layout cells. Pillow renders a versioned monospaced bitmap fixture; NumPy compares each observed binary cell against only the characters allowed at that Mercosul position.
 
-Reason:
-
-Mercosul plates seguem formato LLL1L23 (7 caracteres). A geracao de imagem sintetica com Pillow permite controle deterministico sobre o ground truth. Oracle OCR retorna o metadata diretamente, estabelecendo um baseline perfeito (accuracy=1.0) que valida o pipeline de benchmark.
-
-## Decision Brain Fields
-
-- Stack profile: python-ml
-- API style: cli
-- Messaging: none
-- Cloud mode: none
-- Database/runtime: none (synthetic data in memory)
-- Library policy: Pillow para geracao de imagem; argparse para CLI; numpy para futuras operacoes de array
-
-## Engineering Principles
-
-Coupling boundary:
-
-Domain types (PlateResult, BenchmarkResult) depend only on standard library. Fixture imports Pillow. CLI imports argparse.
-
-SOLID application:
-
-- SRP: fixture generation, OCR reading, and benchmark output are separate modules.
-- OCP: real OCR backends (PaddleOCR, Ultralytics) can be added without modifying oracle code.
-- LSP: PlateResult is substitutable for any OCR backend output shape.
-- ISP: CLI depends on small function signatures (generate_dataset, oracle_read, run_benchmark).
-- DIP: benchmark orchestrates high-level functions, not class hierarchies.
-
-Simplicity:
-
-- KISS: one fixture, one oracle OCR, one JSON output.
-- YAGNI: no model serving, no experiment tracking, no hyperparameter optimization.
-- DRY: character accuracy computed once by benchmark module.
-
-Testability evidence:
-
-- Domain types test PlateResult/ BenchmarkResult construction and JSON roundtrip.
-- OCR tests verify deterministic correctness for known plates.
-- No network, database, or cloud dependency required for any test.
+The reader receives only `PIL.Image.Image`. Ground truth enters `evaluate_plate` after prediction and is used solely to calculate errors.
 
 ## Rejected Options
 
-| Option | Why rejected |
+| Option | Reason |
 |---|---|
-| PaddleOCR/Ultralytics real OCR | GPU dependency and complex installation; oracle baseline is sufficient for reproducible benchmark |
-| Real license plate dataset | Network dependency and licensing risk; synthetic fixture is deterministic |
-| FastAPI serving endpoint | No UI or API requirement; CLI is sufficient |
+| Oracle returning metadata | Tautological and invalid as OCR accuracy evidence. |
+| PaddleOCR or Ultralytics baseline | Adds model downloads, GPU and external artifact risk before a truthful local baseline exists. |
+| Real-road dataset | Licensing, privacy and reproducibility require a separate dataset decision and benchmark version. |
+| OpenCV dependency | Fixed cells and binary template distance need only Pillow and NumPy. |
+| FastAPI | The proof target is a deterministic batch benchmark, so CLI is the smaller valid boundary. |
 
-## API Contract
+## Engineering Principles
 
-Contract artifact: CLI argparse (`demo`, `benchmark` subcommands)
+- SRP: rendering, fixture generation, prediction, evaluation and serialization are separate modules.
+- OCP: a later OCR backend can implement image-to-string without changing result calculation.
+- LSP: any reader must predict the same seven-character contract from the image alone.
+- ISP: the published reader exposes `read_plate(image) -> str`; it does not accept metadata it could leak into prediction.
+- DIP: benchmark orchestration depends on prediction behavior, while metric calculation stays in the application pipeline.
+- KISS/YAGNI: no model server, broker, cloud adapter or training pipeline is added.
+- DRY: fixture and matcher share one versioned glyph rendering contract.
 
-## Cloud Local-First
+## Reproducibility
 
-Local provider: none
-Real provider target: none
-Config switch: none
+- Docker installs exact runtime versions from `requirements.txt` before installing the package with `--no-deps`.
+- `benchmarks/config/alpr-synthetic-v1.json` owns workload and renderer identity.
+- The V2 producer records clean source SHA, raw artifact digest, fixture/config/lock digests and image digest.
+- `execution.repeat=1`; `workload.measured_iterations=100`.
 
-## Benchmark Impact
+## Limits
 
-Expected impact: character_accuracy = 1.0, plate_accuracy = 1.0 with 100 synthetic plates, seed 42
-
-Validation command:
-
-```powershell
-alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/validation.json
-```
-
-## Operational Cost
-
-- Docker services added: none
-- Local demo complexity: low
-- Failure case required: no
-
-## Follow-up
-
-- N/A
+The benchmark measures OCR on synthetic, centered, fixed-size plates rendered from the same versioned glyph family used by the matcher. It does not measure plate detection, perspective correction, blur, illumination, camera artifacts, or real-road generalization.
