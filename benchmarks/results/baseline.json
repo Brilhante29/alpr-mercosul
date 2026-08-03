@@ -3,14 +3,14 @@
   "metric": "character_accuracy",
   "value": 1.0,
   "unit": "unit",
-  "timestamp": "2026-07-20T20:14:00Z",
-  "command": "alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks\\results\\baseline.json",
+  "timestamp": "2026-08-03T01:53:36Z",
+  "command": "alpr-mercosul benchmark --n-plates 100 --seed 42 --output /app/benchmarks/results/baseline.json",
   "environment": {
-    "python_version": "3.10.11",
-    "platform": "Windows-10-10.0.26200-SP0",
+    "python_version": "3.12.13",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
     "seed": 42,
     "n_plates": 100,
-    "ocr_backend": "oracle"
+    "ocr_backend": "template-matching-v1"
   },
   "metrics": {
     "character_accuracy": 1.0,
@@ -21,9 +21,10 @@
     "total_characters": 700
   },
   "proof": {
-    "fixture": "synthetic",
+    "fixture": "synthetic-fixed-layout",
     "fixture_generator": "alpr_mercosul.fixture.generate_plate",
-    "ocr_backend": "oracle",
+    "ocr_backend": "template-matching-v1",
+    "prediction_input": "image_pixels_only",
     "plate_format": "LLL1L23"
   },
   "failures": 0,

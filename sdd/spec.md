@@ -47,5 +47,5 @@ synthetic fixture -> fixed-layout pixel OCR -> benchmark evaluation -> JSON evid
 - [x] Reader accepts the image only; ground truth is confined to evaluation.
 - [x] A pixel-mutation test proves prediction follows pixels rather than labels.
 - [x] Zero workload fails.
-- [ ] Fresh Docker benchmark and V2 evidence are committed.
+- [x] Fresh Docker benchmark and V2 evidence are ready to commit.
 - [ ] Exact-head CI and central publication evidence are green.

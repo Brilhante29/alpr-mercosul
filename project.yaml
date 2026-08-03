@@ -6,7 +6,7 @@ program:
   shared_assets:
     - reproducible benchmark JSON schema (plate-level)
     - synthetic plate image fixture generator
-status: implemented
+status: benchmarked
 claim: synthetic Mercosul plate OCR from image pixels
 stack:
   - python-3.12
@@ -100,7 +100,7 @@ benchmark:
   command: "alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json"
   result_path: benchmarks/results/baseline.json
   publication_result_path: benchmarks/publication/alpr-baseline-v2.json
-  evidence_status: stale
+  evidence_status: current
 release:
   docker: "docker run --rm alpr-mercosul"
   no_secret_default_path: true

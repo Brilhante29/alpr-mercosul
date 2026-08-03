@@ -2,7 +2,7 @@
 
 Project: `5 - alpr-mercosul`
 
-## Review points
+## Review Points
 
 - [x] after scaffold
 - [x] after architecture decision
@@ -14,25 +14,19 @@ Project: `5 - alpr-mercosul`
 
 | Finding | Classification | Kit Area | Action | Status |
 |---|---|---|---|---|
-| Synthetic plate fixture generator with Pillow is reusable across CV projects | `patch_now` | `templates` | document the pattern as a recommended approach for deterministic OCR benchmarks | recorded |
-| BenchmarkResult schema with plate-level results is consistent with other portfolio projects | `patch_now` | `contracts` | keep the shared schema stable for cross-project comparison | recorded |
-| Dockerfile structure follows established portfolio pattern | `reject` | `templates` | project-specific dependencies and entrypoint should remain local | rejected |
+| Run repetition was incorrectly used as measured workload size. | `patch_now` | benchmark producer and skill | separate `repeat` from explicit or derived work-item counts | completed in kit `6f557a0` |
+| Published evidence must be validated from committed source rather than mutable worktree files. | `patch_now` | central validator | read publication inputs from Git `HEAD` and report dirt independently | completed in kit `16a3622` |
+| Image-only prediction needs a negative label-leakage test. | `backlog` | CV benchmark guidance | extract a generic rule only after a second labeled CV project proves the same boundary | recorded |
+| ALPR glyph rendering and fixed-cell matcher should move into the kit. | `reject` | project implementation | keep domain-specific rendering and OCR local | rejected |
 
-## Patch-now decisions
+## Reuse Applied
 
-- The project uses the existing portfolio benchmark JSON shape from other projects.
-- The synthetic plate fixture pattern is documented and ready for reuse by other CV projects.
+- Synchronized `generate-publication-benchmark.py` and matching Codex/Claude `publish-benchmark-evidence` skills.
+- Reused V2 provenance, clean-source, image-digest and measured-workload contracts.
+- Kept the workload config and pixel matcher project-owned.
 
-## Backlog decisions
-
-- Add a shared synthetic fixture generator to portfolio-reuse-kit when two or more projects use the same pattern.
-
-## Rejected improvements
-
-- No external dataset, GPU, or model serving was added; it would increase complexity without improving the OCR benchmark reproducibility claim.
-
-## Final gate
+## Final Gate
 
 - [x] Reusable improvements were patched or recorded.
 - [x] Project-specific implementation was not moved into the kit.
-- [x] Validation reflects the synthetic fixture benchmark contract.
+- [x] Validation reflects the image-only OCR and 100-plate V2 workload contract.

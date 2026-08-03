@@ -1,12 +1,15 @@
 # Release Checklist
 
-- [x] `docker build` passes.
-- [x] `docker run` path documented.
-- [x] Benchmark command runs from clean checkout.
-- [x] Benchmark result stored under `benchmarks/results/`.
-- [x] README opens with number and result.
-- [x] `REFERENCES.md` exists.
-- [x] License exists.
-- [x] No empty directories used as proof.
-- [x] No API key required for the default path.
-- [x] Post angle written in README.
+- [x] Docker base and runtime dependencies are pinned.
+- [x] `docker build` and one-container default path pass.
+- [x] Reader predicts from image pixels without a ground-truth argument.
+- [x] Pixel-mutation negative test detects label leakage.
+- [x] Zero-workload benchmark is rejected.
+- [x] Raw V1 result contains 100 plate records and 700 characters.
+- [x] V2 reports `repeat=1` and `measured_iterations=100`.
+- [x] V2 source, fixture, config, lock, artifact and image digests are recorded.
+- [x] README opens with the measured number and synthetic scope.
+- [x] References, SDD, reuse review and OpenSpec artifacts agree.
+- [x] Default path requires no network credential or paid secret.
+- [ ] Exact-head GitHub Actions is green for the evidence commit.
+- [ ] Central publication evidence is current for the final head.

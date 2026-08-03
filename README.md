@@ -1,14 +1,26 @@
 # #5 alpr-mercosul
 
-**Status:** implementation verified; publication evidence is being regenerated
+**Measured result:** `1.000000` character accuracy on `700` characters from `100` synthetic Mercosul-format plates; `1.000000` full-plate accuracy and `0` failures.
 
-**Proves:** deterministic Mercosul-format plate OCR from synthetic image pixels. The reader receives no ground-truth text.
+**Status:** benchmarked, awaiting exact-head publication CI
+
+**Proves:** deterministic `LLL1L23` plate OCR from synthetic image pixels. The reader receives no ground-truth text.
 
 **Stack:** Python 3.12, Pillow 10.4.0, NumPy 1.26.4, pytest, Docker
 
+## Benchmark
+
+| Metric | Value | Workload |
+|---|---:|---:|
+| Character accuracy | 1.000000 | 700 characters |
+| Full-plate accuracy | 1.000000 | 100 plates |
+| Incorrect plates | 0 | 100 plates |
+
+Publication semantics: one independent run (`repeat=1`) measuring 100 plates (`measured_iterations=100`). The clean source commit is `b23be43`; the executed image digest is `sha256:399b8ba8e00b4855fb0d7605682899a7b02345b3e31237a7755aa97f8f748e37`.
+
 ## Evidence Scope
 
-The workload contains 100 seeded `LLL1L23` plates rendered at 200x80 with controlled pixel noise. A fixed-layout template matcher predicts seven characters from the image. Ground truth is used only after prediction to calculate character and plate accuracy.
+The versioned workload renders 100 seeded plates at 200x80 with 800 controlled dark-noise pixels per image. A fixed-layout template matcher predicts seven characters from each image. Ground truth is used only after prediction to calculate accuracy.
 
 This is a synthetic OCR baseline. It does not claim vehicle detection, plate localization, perspective correction, real-road generalization, or production accuracy.
 
@@ -18,7 +30,7 @@ This is a synthetic OCR baseline. It does not claim vehicle detection, plate loc
 glyph rendering contract -> synthetic fixture -> image-only OCR -> evaluation -> JSON evidence
 ```
 
-The critical boundary is enforced by the API: `read_plate(image) -> str`. A negative test replaces one glyph in the image while preserving the expected label and confirms that the prediction follows the changed pixels.
+The boundary is executable: `read_plate(image) -> str`. A negative test replaces one glyph in the image while preserving the expected label and confirms that prediction follows changed pixels.
 
 ## Run
 
@@ -38,10 +50,11 @@ docker run --rm alpr-mercosul
 
 ## Reproducibility
 
-- Publication workload: `benchmarks/config/alpr-synthetic-v1.json`.
-- Runtime dependencies: exact versions in `requirements.txt` and installed by Docker.
-- Publication producer: `tools/generate-publication-benchmark.py`, synchronized from `portfolio-reuse-kit`.
-- `execution.repeat` counts runs; `workload.measured_iterations` counts plates.
+- Workload config: `benchmarks/config/alpr-synthetic-v1.json`.
+- Raw result: `benchmarks/results/baseline.json`.
+- V2 result: `benchmarks/publication/alpr-baseline-v2.json`.
+- Exact runtime pins: `requirements.txt` and the Docker base digest.
+- Shared producer and Codex/Claude skills are synchronized from `portfolio-reuse-kit`.
 
 ## References
 
