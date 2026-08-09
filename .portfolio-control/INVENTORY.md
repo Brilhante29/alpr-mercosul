@@ -1,21 +1,14 @@
 # Portfolio Control: #5 alpr-mercosul
 
-## Identity
-
-- **Program:** <program>
-- **Status:** scaffold
-- **Proves:** leitura de placa Mercosul
-- **Primary benchmark:** `character_accuracy`
-
-## Evidence Map
+- **Program:** applied-computer-vision
+- **Status:** published
+- **Proves:** image-only OCR on a deterministic synthetic Mercosul-format workload
+- **Primary benchmark:** character accuracy over 700 characters from 100 plates
 
 | Evidence | Location | State |
 |---|---|---|
-| Specification | `sdd/spec.md` | required |
-| Architecture decision | `sdd/architecture-decision.md` | required |
-| Benchmark plan | `sdd/benchmark-plan.md` | required |
-| Benchmark result | `benchmarks/results/` | pending |
-| OpenSpec verification | `openspec/artifacts/verification.md` | required |
-| Reuse review | `sdd/reuse-improvement-review.md` | required |
-
-This file is the project-level inventory. Update it whenever a new proof artifact, reusable component, or architectural decision appears.
+| Specification and decisions | `sdd/`, `openspec/artifacts/` | complete |
+| Raw benchmark | `benchmarks/results/baseline.json` | measured |
+| Publication evidence | `benchmarks/publication/alpr-baseline-v2.json` | validated |
+| Pixel-mutation leakage test | `tests/` | passing |
+| Reuse review | `sdd/reuse-improvement-review.md` | complete |

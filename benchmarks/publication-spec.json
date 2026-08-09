@@ -1,0 +1,17 @@
+{
+  "project": "alpr-mercosul",
+  "v1_project": "5-alpr-mercosul",
+  "benchmark_id": "alpr-ocr",
+  "primary_metric": "character_accuracy",
+  "v1_path": "benchmarks/results/baseline.json",
+  "v2_path": "benchmarks/publication/alpr-baseline-v2.json",
+  "config_path": "benchmarks/config/alpr-synthetic-v1.json",
+  "fixture_path": "src/alpr_mercosul/fixture.py",
+  "lock_path": "requirements.txt",
+  "repeat": 1,
+  "measured_iterations": 100,
+  "warmup_iterations": 0,
+  "concurrency": 1,
+  "comparability_key": "alpr-ocr:1.0.0:template-matching-v1:synthetic-plates:amd64",
+  "readme_values": ["1.000000", "700", "synthetic"]
+}

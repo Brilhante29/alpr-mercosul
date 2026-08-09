@@ -35,29 +35,47 @@ def sha256_file(path: Path) -> str:
     return f"sha256:{digest.hexdigest()}"
 
 
-def sha256_tree(path: Path) -> str:
-    """Digest a directory deterministically: sorted relative path + content."""
-    digest = hashlib.sha256()
-    for entry in sorted(p for p in path.rglob("*") if p.is_file()):
-        digest.update(entry.relative_to(path).as_posix().encode("utf-8"))
-        digest.update(entry.read_bytes())
-    return f"sha256:{digest.hexdigest()}"
 
-
-def digest_path(path: Path) -> str:
-    if path.is_dir():
-        return sha256_tree(path)
-    return sha256_file(path)
+def git_bytes(repo: Path, *args: str) -> bytes:
+    completed = subprocess.run(
+        ["git", "-c", f"safe.directory={repo}", "-C", str(repo), *args],
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        detail = completed.stderr.decode(errors="replace").strip()
+        raise SystemExit(f"git {' '.join(args)} failed: {detail}")
+    return completed.stdout
 
 
 def git_checked(repo: Path, *args: str) -> str:
-    completed = subprocess.run(
-        ["git", "-C", str(repo), *args], capture_output=True, text=True, check=False
-    )
-    if completed.returncode != 0:
-        detail = completed.stderr.strip() or completed.stdout.strip()
-        raise SystemExit(f"git {' '.join(args)} failed: {detail}")
-    return completed.stdout.strip()
+    return git_bytes(repo, *args).decode("utf-8").strip()
+
+
+def digest_committed_path(repo: Path, path: Path, commit: str) -> str:
+    """Digest a tracked file or tree from Git blobs, independent of checkout EOLs."""
+    relative = path.relative_to(repo).as_posix()
+    object_name = f"{commit}:{relative}"
+    object_type = git_checked(repo, "cat-file", "-t", object_name)
+    if object_type == "blob":
+        content = git_bytes(repo, "show", object_name)
+        return f"sha256:{hashlib.sha256(content).hexdigest()}"
+    if object_type != "tree":
+        raise SystemExit(f"unsupported Git object for provenance: {relative} ({object_type})")
+
+    entries = git_bytes(
+        repo, "ls-tree", "-r", "-z", "--name-only", commit, "--", relative
+    ).split(b"\0")
+    digest = hashlib.sha256()
+    prefix = f"{relative}/"
+    for raw_entry in sorted(entry for entry in entries if entry):
+        entry = raw_entry.decode("utf-8")
+        if not entry.startswith(prefix):
+            raise SystemExit(f"unexpected Git tree entry for {relative}: {entry}")
+        digest.update(entry[len(prefix) :].encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(git_bytes(repo, "show", f"{commit}:{entry}"))
+    return f"sha256:{digest.hexdigest()}"
 
 
 def repo_path(repo: Path, value: Path, label: str) -> Path:
@@ -280,8 +298,8 @@ def main() -> int:
         "benchmark_id": args.benchmark_id,
         "workload": {
             "version": args.workload_version,
-            "fixture_digest": digest_path(fixture_path),
-            "config_digest": digest_path(config_path),
+            "fixture_digest": digest_committed_path(repo, fixture_path, source_commit),
+            "config_digest": digest_committed_path(repo, config_path, source_commit),
             "warmup_iterations": args.warmup_iterations,
             "measured_iterations": measured_iterations,
             "concurrency": args.concurrency,
@@ -304,7 +322,7 @@ def main() -> int:
             "clean_tree": True,
             "image_ref": image_ref,
             "image_digest": digest,
-            "dependency_lock_digest": digest_path(lock_path),
+            "dependency_lock_digest": digest_committed_path(repo, lock_path, source_commit),
             "producer": args.producer,
             "artifact_digest": sha256_file(v1_path),
         },

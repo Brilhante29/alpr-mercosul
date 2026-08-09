@@ -2,7 +2,7 @@
 
 **Measured result:** `1.000000` character accuracy on `700` characters from `100` synthetic Mercosul-format plates; `1.000000` full-plate accuracy and `0` failures.
 
-**Status:** published. The benchmark evidence commit `f22c834` passed every GitHub Actions gate in [run 30778167462](https://github.com/Brilhante29/alpr-mercosul/actions/runs/30778167462).
+**Status:** published. The provenance-rich V2 evidence binds the clean benchmark source, immutable OCI image, workload, fixture, dependency lock and raw V1 result.
 
 **Proves:** deterministic `LLL1L23` plate OCR from synthetic image pixels. The reader receives no ground-truth text.
 

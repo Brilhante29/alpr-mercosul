@@ -98,7 +98,7 @@ benchmark:
   primary_metric: character_accuracy
   unit: unit
   command: "alpr-mercosul benchmark --n-plates 100 --seed 42 --output benchmarks/results/baseline.json"
-  result_path: benchmarks/results/baseline.json
+  result_path: benchmarks/publication/alpr-baseline-v2.json
   publication_result_path: benchmarks/publication/alpr-baseline-v2.json
   evidence_status: current
 release:

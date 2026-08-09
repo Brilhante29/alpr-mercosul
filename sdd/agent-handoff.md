@@ -34,4 +34,4 @@ Project: `5 - alpr-mercosul`
 
 ## Next Action
 
-Use the central `portfolio-reuse-kit` publication registry for the final metadata HEAD and continue the portfolio queue with `mlops-end2end` (#21). Do not expand this synthetic workload into a real-road claim.
+Keep the V2 artifact and exact-head CI green while the central `portfolio-reuse-kit` records this repository in the completed Applied Computer Vision program. Do not expand this synthetic workload into a real-road claim without a new dataset, architecture decision, workload version and comparability key.

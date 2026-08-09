@@ -1,2 +1,0 @@
-[console_scripts]
-alpr-mercosul = alpr_mercosul.cli:main

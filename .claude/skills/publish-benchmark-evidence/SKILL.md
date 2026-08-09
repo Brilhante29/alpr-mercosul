@@ -16,11 +16,13 @@ Create publication evidence from a real execution. Never convert documentation o
 ## Execute
 
 1. Require a clean Git tree, pinned dependencies, a pinned Docker image, fixture/config inputs, and a declared comparability key.
-2. Determine the measured workload count from explicit V1 count fields or pass --measured-iterations. Never derive measured iterations from repeat.
-3. Run the benchmark. Preserve the raw result and emit benchmarks/publication/<name>-v2.json.
-4. Validate the V2 file against .portfolio/contracts/benchmark-result-v2.schema.json or the kit contract.
-5. Align the README opening, project.yaml, SDD, and OpenSpec with the committed value.
-6. Commit raw evidence and V2 evidence, push without force, then verify CI for that exact SHA with tools/verify-github-publication.ps1.
+2. Hash tracked fixture, config, and lock inputs from Git blobs at `provenance.source_commit`, never from checkout bytes. This makes evidence invariant to CRLF/LF conversion. Hash the generated raw result from the bytes actually produced.
+3. Ensure CI fetches enough history to contain `provenance.source_commit`; a shallow checkout must not silently weaken provenance.
+4. Determine the measured workload count from explicit V1 count fields or pass --measured-iterations. Never derive measured iterations from repeat.
+5. Run the benchmark. Preserve the raw result and emit benchmarks/publication/<name>-v2.json.
+6. Validate the V2 file against .portfolio/contracts/benchmark-result-v2.schema.json or the kit contract.
+7. Align the README opening, project.yaml, SDD, and OpenSpec with the committed value.
+8. Commit raw evidence and V2 evidence, push without force, then verify CI for that exact SHA with tools/verify-github-publication.ps1.
 
 Generic producer shape:
 
