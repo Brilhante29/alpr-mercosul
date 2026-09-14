@@ -53,6 +53,25 @@ def git_has_commit(commit: str) -> bool:
     return completed.returncode == 0
 
 
+def validate_committed_digests(
+    v2: dict[str, Any], fixture_path: Path, config_path: Path, lock_path: Path
+) -> None:
+    provenance = v2["provenance"]
+    source_commit = provenance["source_commit"]
+    require(re.fullmatch(r"[0-9a-f]{40}", source_commit) is not None, "invalid source commit")
+    require(git_has_commit(source_commit), "source commit unavailable; fetch full history")
+    producer = load_producer()
+    for recorded, path, label in (
+        (v2["workload"]["fixture_digest"], fixture_path, "fixture"),
+        (v2["workload"]["config_digest"], config_path, "config"),
+        (provenance["dependency_lock_digest"], lock_path, "dependency lock"),
+    ):
+        require(
+            recorded == producer.digest_committed_path(ROOT, path, source_commit),
+            f"committed {label} digest mismatch",
+        )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--require-git", action="store_true")
@@ -109,21 +128,7 @@ def main() -> None:
         require(str(expected) in readme, f"README is missing publication value: {expected}")
 
     if args.require_git:
-        source_commit = provenance["source_commit"]
-        require(git_has_commit(source_commit), "source commit unavailable; fetch full history")
-        producer = load_producer()
-        require(
-            workload["fixture_digest"] == producer.digest_committed_path(ROOT, fixture_path, source_commit),
-            "committed fixture digest mismatch",
-        )
-        require(
-            workload["config_digest"] == producer.digest_committed_path(ROOT, config_path, source_commit),
-            "committed config digest mismatch",
-        )
-        require(
-            provenance["dependency_lock_digest"] == producer.digest_committed_path(ROOT, lock_path, source_commit),
-            "committed dependency lock digest mismatch",
-        )
+        validate_committed_digests(v2, fixture_path, config_path, lock_path)
 
     serialized = json.dumps({"v1": v1, "v2": v2})
     for forbidden in ("C:\\Users\\", "github" + "_pat_", "gh" + "p_"):

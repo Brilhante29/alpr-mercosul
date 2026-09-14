@@ -1,14 +1,25 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import re
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).parents[1]
 V1_PATH = ROOT / "benchmarks/results/baseline.json"
 V2_PATH = ROOT / "benchmarks/publication/alpr-baseline-v2.json"
 CONFIG_PATH = ROOT / "benchmarks/config/alpr-synthetic-v1.json"
+FIXTURE_PATH = ROOT / "src/alpr_mercosul/fixture.py"
+LOCK_PATH = ROOT / "requirements.txt"
+MODULE_SPEC = importlib.util.spec_from_file_location(
+    "publication_validator", ROOT / "tools/validate_publication.py"
+)
+assert MODULE_SPEC is not None and MODULE_SPEC.loader is not None
+validator = importlib.util.module_from_spec(MODULE_SPEC)
+MODULE_SPEC.loader.exec_module(validator)
 
 
 def sha256(path: Path) -> str:
@@ -34,9 +45,7 @@ def test_publication_evidence_matches_raw_pixel_ocr_run():
     assert v2["execution"]["repeat"] == len(metric["samples"]) == 1
     assert v2["workload"]["measured_iterations"] == total_plates
     assert v2["provenance"]["artifact_digest"] == sha256(V1_PATH)
-    assert v2["workload"]["fixture_digest"] == sha256(ROOT / "src/alpr_mercosul/fixture.py")
-    assert v2["workload"]["config_digest"] == sha256(CONFIG_PATH)
-    assert v2["provenance"]["dependency_lock_digest"] == sha256(ROOT / "requirements.txt")
+    validator.validate_committed_digests(v2, FIXTURE_PATH, CONFIG_PATH, LOCK_PATH)
     assert v2["provenance"]["clean_tree"] is True
     assert re.fullmatch(r"[0-9a-f]{40}", v2["provenance"]["source_commit"])
     assert v2["provenance"]["image_ref"].endswith(v2["provenance"]["image_digest"])
@@ -45,3 +54,39 @@ def test_publication_evidence_matches_raw_pixel_ocr_run():
     windows_home_backslash = "\\" + "Users" + "\\"
     assert windows_home not in v2["execution"]["command"]
     assert windows_home_backslash not in v2["execution"]["command"]
+
+
+def test_current_dependency_changes_preserve_historical_validation(monkeypatch):
+    v2 = json.loads(V2_PATH.read_text())
+    original_read_bytes = Path.read_bytes
+
+    def changed_checkout(path):
+        if path == LOCK_PATH:
+            return b"pillow==12.3.0\nnumpy==1.26.4\n"
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", changed_checkout)
+    assert sha256(LOCK_PATH) != v2["provenance"]["dependency_lock_digest"]
+    validator.validate_committed_digests(v2, FIXTURE_PATH, CONFIG_PATH, LOCK_PATH)
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "message"),
+    [
+        ("provenance", "dependency_lock_digest", "committed dependency lock digest mismatch"),
+        ("workload", "fixture_digest", "committed fixture digest mismatch"),
+        ("workload", "config_digest", "committed config digest mismatch"),
+    ],
+)
+def test_historical_digest_tampering_is_rejected(section, field, message):
+    v2 = json.loads(V2_PATH.read_text())
+    v2[section][field] = "sha256:" + "0" * 64
+    with pytest.raises(AssertionError, match=message):
+        validator.validate_committed_digests(v2, FIXTURE_PATH, CONFIG_PATH, LOCK_PATH)
+
+
+def test_unavailable_historical_commit_is_rejected():
+    v2 = json.loads(V2_PATH.read_text())
+    v2["provenance"]["source_commit"] = "0" * 40
+    with pytest.raises(AssertionError, match="source commit unavailable"):
+        validator.validate_committed_digests(v2, FIXTURE_PATH, CONFIG_PATH, LOCK_PATH)
