@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
 
-> Real-world plate recognition was the subject of my peer-reviewed paper ([ISDA 2023, Springer](https://doi.org/10.1007/978-3-031-35507-3_4)), which used deep learning with perspective adjustment. This repository isolates the part that must stay correct no matter which model sits inside: the format contract, the image-only reader boundary, and evaluation that never sees ground truth before prediction.
+> Real-world plate recognition was the subject of my peer-reviewed paper ([ISDA 2022 proceedings, Springer LNNS 715, 2023](https://doi.org/10.1007/978-3-031-35507-3_4)), which used deep learning with perspective adjustment. This repository isolates the part that must stay correct no matter which model sits inside: the format contract, the image-only reader boundary, and evaluation that never sees ground truth before prediction.
 
 ## Why this exists
 
@@ -98,7 +98,7 @@ The project follows the spec-driven workflow of [portfolio-reuse-kit](https://gi
 
 ## Related work
 
-- [New Approach in LPR Systems Using Deep Learning to Classify Mercosur License Plates with Perspective Adjustment](https://doi.org/10.1007/978-3-031-35507-3_4), ISDA 2023, Springer (co-author).
+- [New Approach in LPR Systems Using Deep Learning to Classify Mercosur License Plates with Perspective Adjustment](https://doi.org/10.1007/978-3-031-35507-3_4), ISDA 2022 proceedings, Springer LNNS 715, 2023 (co-author).
 - [yolo-training-pipeline](https://github.com/Brilhante29/yolo-training-pipeline) and [vision-serving-fastapi](https://github.com/Brilhante29/vision-serving-fastapi): the training and serving side of a detector-based reader.
 
 See [`REFERENCES.md`](REFERENCES.md) for library and format attribution.
